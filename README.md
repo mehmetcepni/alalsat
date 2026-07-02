@@ -46,19 +46,21 @@ Backend'i çalıştırmadan önce kök dizindeki [.env.example](.env.example) do
 <table align="center">
   <tr>
     <td align="center">
-      <img src="screenshots/ilan.png" width="220"><br>
+      <img src="screenshots/ilan.png" width="420"><br>
       <b>İlanlar</b>
     </td>
     <td align="center">
-      <img src="screenshots/ilanlarım.png" width="220"><br>
+      <img src="screenshots/ilanlarım.png" width="420"><br>
       <b>İlanlarım</b>
     </td>
+  </tr>
+  <tr>
     <td align="center">
-      <img src="screenshots/ilanver.png" width="220"><br>
+      <img src="screenshots/ilanver.png" width="420"><br>
       <b>İlan Ver</b>
     </td>
     <td align="center">
-      <img src="screenshots/ai_ilan.png" width="220"><br>
+      <img src="screenshots/ai_ilan.png" width="420"><br>
       <b>AI Destekli İlan</b>
     </td>
   </tr>
