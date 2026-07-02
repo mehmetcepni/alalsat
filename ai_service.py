@@ -2,11 +2,14 @@ import os
 from google import genai
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # --- AYARLAR ---
 # API anahtarini kodda tutma, ortam degiskeninden oku.
 # Bazi ortamlarda anahtar GOOGLE_API_KEY olarak tanimli olabilir.
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 client = None
 DB_CONFIG = {
@@ -39,6 +42,10 @@ def get_inventory():
         return "Envanter bilgisi şu an teknik bir sorun nedeniyle alınamadı."
 
 
+def get_gemini_api_key():
+    return os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+
+
 def get_gemini_client():
     """Gemini istemcisini ilk kullanımda oluşturur."""
     global client
@@ -46,10 +53,12 @@ def get_gemini_client():
     if client is not None:
         return client
 
-    if not GEMINI_API_KEY:
+    gemini_api_key = get_gemini_api_key()
+
+    if not gemini_api_key:
         raise RuntimeError("GEMINI_API_KEY (veya GOOGLE_API_KEY) ortam degiskeni tanimli degil.")
 
-    client = genai.Client(api_key=GEMINI_API_KEY, http_options={"api_version": "v1"})
+    client = genai.Client(api_key=gemini_api_key, http_options={"api_version": "v1"})
     return client
 
 def ask_gemini(user_query: str):
