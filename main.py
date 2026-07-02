@@ -2,7 +2,7 @@ import time
 import secrets # Güvenli token üretmek için standart Python kütüphanesi
 import psycopg2.extras
 from mail_utils import send_mail
-from ai_service import ask_gemini
+from ai_service import ask_gemini, generate_listing_description
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Header, HTTPException, Body, Query
 
@@ -18,6 +18,7 @@ import os
 from fastapi.staticfiles import StaticFiles
 from fastapi import UploadFile, File
 from fastapi import WebSocket, WebSocketDisconnect
+from ai_service import validate_gemini_configuration
 
 
 
@@ -32,6 +33,15 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def check_ai_configuration() -> None:
+    is_valid, message = validate_gemini_configuration()
+    if is_valid:
+        print(f"AI konfigurasyonu kontrol edildi: {message}")
+    else:
+        print(f"UYARI: {message}")
 
 
 class VehicleCreate(BaseModel):
@@ -2075,3 +2085,12 @@ def ai_query(data: dict = Body(...)):
         return {"cevap": cevap}
     except Exception as e:
         return {"hata": f"AI servisi şu an çalışmıyor: {str(e)}"}
+
+
+@app.post("/ai/ilan-aciklama")
+def ai_listing_description(data: dict = Body(...)):
+    try:
+        aciklama = generate_listing_description(data)
+        return {"aciklama": aciklama}
+    except Exception as e:
+        return {"hata": f"İlan açıklaması oluşturulamadı: {str(e)}"}

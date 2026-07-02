@@ -20,6 +20,7 @@ const IlanVer = () => {
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
     const [yukleniyor, setYukleniyor] = useState(false);
+    const [aciklamaUretmeYukleniyor, setAciklamaUretmeYukleniyor] = useState(false);
     
     // Backend'in beklediği tüm alanlar burada eksiksiz tanımlandı
     const [arac, setArac] = useState({
@@ -56,6 +57,41 @@ const IlanVer = () => {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             setSelectedFile(e.target.files[0]);
+        }
+    };
+
+    const handleAiAciklamaUret = async () => {
+        const rawToken = localStorage.getItem('token');
+
+        if (!rawToken || rawToken === "undefined") {
+            alert("Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.");
+            navigate('/giris');
+            return;
+        }
+
+        setAciklamaUretmeYukleniyor(true);
+        try {
+            const res = await axios.post('http://127.0.0.1:8000/ai/ilan-aciklama', arac, {
+                headers: { 'token': `Bearer ${rawToken}` }
+            });
+
+            if (res.data?.hata) {
+                alert(res.data.hata);
+                return;
+            }
+
+            const generated = (res.data?.aciklama || '').trim();
+            if (!generated) {
+                alert('AI açıklama üretemedi.');
+                return;
+            }
+
+            setArac(prev => ({ ...prev, description: generated }));
+        } catch (err) {
+            console.error('AI açıklama üretme hatası:', err);
+            alert(err.response?.data?.detail || err.response?.data?.hata || 'AI açıklama oluşturulamadı.');
+        } finally {
+            setAciklamaUretmeYukleniyor(false);
         }
     };
 
@@ -287,14 +323,24 @@ const IlanVer = () => {
                         <h3 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">5. Açıklama & Görsel</h3>
                         
                         <InputWrapper label="İlan Açıklaması">
-                            <textarea 
-                                name="description" 
-                                value={arac.description} 
-                                onChange={handleChange} 
-                                required 
-                                placeholder="Aracınızın durumunu, ekstra donanımlarını, bakım geçmişini buraya yazabilirsiniz..." 
-                                className="w-full p-4 border border-gray-200 rounded-xl h-32 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                            />
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleAiAciklamaUret}
+                                    disabled={aciklamaUretmeYukleniyor}
+                                    className={`self-start px-4 py-2 rounded-xl text-sm font-bold transition ${aciklamaUretmeYukleniyor ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+                                >
+                                    {aciklamaUretmeYukleniyor ? 'AI açıklama oluşturuluyor...' : 'AI ile Açıklama Oluştur'}
+                                </button>
+                                <textarea 
+                                    name="description" 
+                                    value={arac.description} 
+                                    onChange={handleChange} 
+                                    required 
+                                    placeholder="Aracınızın durumunu, ekstra donanımlarını, bakım geçmişini buraya yazabilirsiniz..." 
+                                    className="w-full p-4 border border-gray-200 rounded-xl h-32 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                />
+                            </div>
                         </InputWrapper>
 
                         <div className="bg-gray-50 border-2 border-dashed border-gray-300 p-8 rounded-xl text-center">

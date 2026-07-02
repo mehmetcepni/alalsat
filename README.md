@@ -4,6 +4,10 @@ AlAlSat, kullanıcıların güvenli bir şekilde araç ilanı oluşturabildiği,
 
 Proje yalnızca ilan paylaşımına odaklanmak yerine; sosyal ağ özellikleri, gerçek zamanlı mesajlaşma, forum sistemi ve yapay zekâ destekli araç asistanını tek bir platformda birleştirerek kapsamlı bir kullanıcı deneyimi sunmayı amaçlamaktadır.
 
+## Kurulum Notu
+
+Backend'i çalıştırmadan önce kök dizindeki [.env.example](.env.example) dosyasını [.env](.env) olarak kopyalayın ve değerleri doldurun. AI asistanının çalışması için özellikle `GEMINI_API_KEY` veya `GOOGLE_API_KEY` tanımlı olmalıdır; ardından backend'i yeniden başlatın.
+
 ---
 
 # 📸 Ekran Görüntüleri
@@ -42,16 +46,20 @@ Proje yalnızca ilan paylaşımına odaklanmak yerine; sosyal ağ özellikleri, 
 <table align="center">
   <tr>
     <td align="center">
-      <img src="screenshots/ilan.png" width="300"><br>
+      <img src="screenshots/ilan.png" width="220"><br>
       <b>İlanlar</b>
     </td>
     <td align="center">
-      <img src="screenshots/ilanlarım.png" width="300"><br>
+      <img src="screenshots/ilanlarım.png" width="220"><br>
       <b>İlanlarım</b>
     </td>
     <td align="center">
-      <img src="screenshots/ilanver.png" width="300"><br>
+      <img src="screenshots/ilanver.png" width="220"><br>
       <b>İlan Ver</b>
+    </td>
+    <td align="center">
+      <img src="screenshots/ai_ilan.png" width="220"><br>
+      <b>AI Destekli İlan</b>
     </td>
   </tr>
 </table>
